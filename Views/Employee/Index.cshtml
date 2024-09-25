@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Employee>
+@{
+    ViewData["Title"] = "Employee List";
+}
+<div class="row">
+    <h1 class="col-10">Employee List :</h1>
+    <div class="col">
+        <a asp-action="create" asp-controller="Employee" class="btn btn-primary">Create Employee</a>
+    </div>
+</div>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No employees to display. Please Create one.
+    </div>
+}
+else
+{
+    <table id="employeeTable" class="table">
+        <thead>
+            <tr>
+                <th>Sr No.</th>
+                <th>Employee Name</th>
+                <th>Onsite</th>
+                <th>Is Working</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int serialNumber = 1;
+            }
+            @foreach (var employee in Model)
+            {
+                <tr>
+                    <td>@serialNumber</td>
+                    <td>@employee.EmployeeName</td>
+                    <td>@(employee.OnSite ? "Yes" : "No")</td>
+                    <td>@(employee.IsWorking ? "Yes" : "No")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@employee.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete @employee.EmployeeName?')">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                serialNumber++;
+            }
+        </tbody>
+    </table>
+}
+@section Scripts {
+    <script>
+        $(document).ready(function ()
+        {
+            $('#employeeTable').DataTable({
+                language:{
+                    lengthMenu: "<span style='font-size: 1.2rem; font-weight: semibold; margin-right: 1rem;'>Employees Records per page</span> _MENU_",
+                }
+            });
+        });
+    </script>
+}

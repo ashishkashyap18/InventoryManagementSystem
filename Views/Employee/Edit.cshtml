@@ -1,0 +1,45 @@
+﻿@model Employee
+@{
+    ViewData["Title"] = "Edit employee";
+}
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Edit Employee</h1>
+    <a asp-controller="employee" asp-action="Index" class="btn btn-primary">Back</a>
+</div>
+<form method="post" asp-action="edit" class="d-flex flex-column gap-3">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group row">
+        <label asp-for="EmployeeName" class="col-2 col-form-label">Name</label>
+        <div class="col-9">
+            <input asp-for="EmployeeName" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="OnSite" class="col-2 col-form-label"></label>
+        <div class="col-9">
+            <input type="checkbox" asp-for="OnSite" class="form-check" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="IsWorking" class="col-2 col-form-label"></label>
+        <div class="col-9">
+            <input type="checkbox" asp-for="IsWorking" class="form-check" />
+        </div>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-warning" type="submit">Update</button>
+        <a class="btn btn-danger" onclick="cancelUpdate()">Cancel</a>
+    </div>
+</form>
+@section Scripts {
+    <script>
+        function cancelUpdate()
+        {
+            const response = confirm("Are you sure want to discard the changes ?");
+            if (response)
+            {
+                window.location.href = '@Url.Action("Index", "Employee")';
+            }
+        }
+    </script>
+}

@@ -1,0 +1,45 @@
+﻿@model Employee
+@{
+    ViewData["Title"] = "Create Employee";
+}
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Create Employee</h1>
+    <a asp-controller="Employee" asp-action="Index" class="btn btn-primary">Back</a>
+</div>
+<form method="post" asp-controller="employee" asp-action="create" class="d-flex gap-3 flex-column mt-3">
+    <div class="form-group row">
+        <label asp-for="EmployeeName" class="col-2 col-form-label">Name</label>
+        <div class="col-9">
+            <input asp-for="EmployeeName" class="form-control" />
+            <span asp-validation-for="EmployeeName" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="OnSite" class="col-2 col-form-label">On Site</label>
+        <div class="col-9 align-content-center">
+            <input asp-for="OnSite" type="checkbox" class="form-check-input" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="IsWorking" class="col-2 col-form-label">Is Working</label>
+        <div class="col-9 align-content-center">
+            <input asp-for="IsWorking" type="checkbox" class="form-check-input" />
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a class="btn btn-danger" onclick="confirmRedirect()">Cancel</a>
+    </div>
+</form>
+@section Scripts {
+    <script>
+        function confirmRedirect()
+        {
+            const userConfirmed = confirm("Are you sure want to cancel the employee creation ?");
+            if (userConfirmed)
+            {
+                window.location.href = '@Url.Action("Index","Employee")';
+            }
+        }
+    </script>
+}
