@@ -1,0 +1,34 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "Create Product";
+    var units = ViewBag.Units as IEnumerable<Unit>;
+}
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Create Product :</h1>
+    <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Back to List</a>
+</div>
+
+<form asp-controller="Product" asp-action="Create" method="post">
+    <div class="form-group row mb-2">
+        <label asp-for="Name" class="col-2 col-form-label"></label>
+        <div class="col-9">
+            <input asp-for="Name" class="form-control" />
+            <span class="text-danger" asp-validation-for="Name"></span>
+        </div>
+    </div>
+    <div class="form-group row mb-2">
+        <label asp-for="UnitId" class="col-2 col-form-label">Unit</label>
+        <div class="col-9">
+            <select asp-for="UnitId" class="form-control" asp-items="@(new SelectList(units,"id","UOM"))"></select>
+            <span class="text-danger" asp-validation-for="UnitId"></span>
+        </div>
+    </div>
+    <div class="form-group row mb-2">
+        <label asp-for="Rate" class="col-2 col-form-label">Product Rate</label>
+        <div class="col-9">
+            <input asp-for="Rate" class="form-control" />
+            <span class="text-danger" asp-validation-for="Rate"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

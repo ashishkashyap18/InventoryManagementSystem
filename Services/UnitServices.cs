@@ -16,6 +16,7 @@ namespace ManagementSystem.Services
         public async Task<Unit> CreateUnit(Unit unit)
         {
             await _context.Units.AddAsync(unit);
+            await _context.SaveChangesAsync();
             return unit;
         }
 

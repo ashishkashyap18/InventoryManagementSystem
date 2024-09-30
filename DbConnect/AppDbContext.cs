@@ -15,12 +15,6 @@ namespace ManagementSystem.DbConnect
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Unit)
-                .WithMany()
-                .HasForeignKey(p => p.UnitId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Production>()
                 .HasOne(pr => pr.Employee)
                 .WithMany()

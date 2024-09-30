@@ -4,7 +4,7 @@
 }
 <div class="d-flex justify-content-between align-items-center">
     <h1>Product List :</h1>
-    <a asp-controller="product" asp-action="create" class="btn btn-primary">Create Product</a>
+    <a asp-controller="Product" asp-action="Create" class="btn btn-primary">Create Product</a>
 </div>
 @if (!Model.Any())
 {
@@ -16,26 +16,31 @@ else
 {
     <table id="productTable" class="table">
         <thead>
-            <tr>Sr no.</tr>
-            <tr>Product Name</tr>
-            <tr>Unit</tr>
-            <tr>Rate</tr>
-            <tr>Actions</tr>
+            <tr>
+                <th>Sr no.</th>
+                <th>Product Name</th>
+                <th>Uom</th>
+                <th>Rate</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
             @{
                 int serialNumber = 1;
             }
-            @foreach(var product in Model){
-                <tr>@serialNumber</tr>
-                <tr>@product.Name</tr>
-                <tr>@product.UnitId</tr>
-                <tr>@product.Rate</tr>
+            @foreach (var product in Model)
+            {
                 <tr>
-                    <a class="btn btn-warning">Edit</a>
-                    <form onsubmit="return confirm('Are you sure want to delete the @product.Name')" asp-controller="Product"  >
-                        <button class="btn btn-danger">Delete</button>
-                    </form>
+                    <td>@serialNumber</td>
+                    <td>@product.Name</td>
+                    <td>@product.Unit?.UOM</td>
+                    <td>@product.Rate</td>
+                    <td>
+                        <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning">Edit</a>
+                        <form onsubmit="return confirm('Are you sure want to delete the @product.Name')" method="post" class="d-inline" asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id">
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 serialNumber++;
             }
@@ -47,8 +52,12 @@ else
     <script>
         $(document).ready(function ()
         {
-            $("#productTable").DataTable();
-        });
+            $("#productTable").DataTable({
+                 language: {
+                                    lengthMenu: "<span style='font-size: 1.2rem; font-weight: semibold; margin-right: 1rem;'>Products Records per page</span> _MENU_",
+                                           }
+                              });
+                        });
     </script>
 }
 

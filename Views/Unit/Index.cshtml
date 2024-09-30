@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Unit>
+@{
+    ViewData["Title"] = "Units List";
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Units List : </h1>
+    <a class="btn btn-primary" asp-controller="Unit" asp-action="Create">Create</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No Product to display. Please Create one.
+    </div>
+}
+else
+{
+    <table class="table" id="unitTable">
+        <thead>
+            <tr>
+                <th>Sr no.</th>
+                <th>Unit Name</th>
+                <th>UOM</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int serialNumber = 1;
+            }
+            @foreach (var unit in Model)
+            {
+                <tr>
+                    <td>@serialNumber</td>
+                    <td>@unit.UnitName</td>
+                    <td>@unit.UOM</td>
+                    <td>
+                        <a asp-controller="Unit" asp-action="Edit" asp-route-id="@unit.id" class="btn btn-warning">Edit</a>
+                        <form asp-controller="Unit" asp-action="Delete" asp-route-id="@unit.id" method="post" class="d-inline" onsubmit="return confirm('Are you sure want to delete @unit.UnitName')">
+                            <button class="btn btn-danger" type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                serialNumber++;
+            }
+        </tbody>
+    </table>
+}
+@section Scripts {
+    <script>
+        $(document).ready(function ()
+        {
+            $("#unitTable").DataTable({
+                language: {
+                    lengthMenu: "<span style='font-size: 1.2rem; font-weight: semibold; margin-right: 1rem;'>Units Records per page</span> _MENU_",
+                }
+            });
+        });
+    </script>
+}

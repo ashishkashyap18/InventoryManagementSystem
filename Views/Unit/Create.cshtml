@@ -1,0 +1,49 @@
+﻿@model Unit
+@{
+    ViewData["Title"] = "Create Unit";
+}
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Create Unit : </h1>
+    <a asp-controller="Unit" asp-action="Index" class="btn btn-primary">Back</a>
+</div>
+<form method="post" asp-controller="Unit" asp-action="create">
+    <div class="form-group row mb-2">
+        <label asp-for="UnitName" class="col-2 col-form-label">Unit Name</label>
+        <div class="col-9">
+            <input asp-for="UnitName" class="form-control" />
+            <span asp-validation-for="UnitName" class="text-danger d-block"></span>
+        </div>
+    </div>
+    <div class="form-group row mb-2">
+        <label asp-for="UOM" class="col-2 col-form-label"></label>
+        <div class="col-9">
+            <input asp-for="UOM" class="form-control" />
+            <span asp-validation-for="UOM" class="text-danger d-block"></span>
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#cancelModal">Cancel</button>
+    </div>
+</form>
+
+<!--Modal-->
+<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelModalLabel">Confirm Cancel</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to cancel? All unsaved changes will be lost.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <a asp-controller="Unit" asp-action="Index" class="btn btn-primary" id="confirmCancel">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -34,7 +34,7 @@ namespace ManagementSystem.Services
 
         public async Task<IEnumerable<Product>> GetAllProduct()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products.Include(p=>p.Unit).ToListAsync();
         }
 
         public async Task<Product> GetProductById(int id)
