@@ -17,10 +17,11 @@ namespace ManagementSystem.Models
         public DateOnly Date { get; set; }
 
         [Required]
-        public decimal Qty { get; set; }
+        public double Qty { get; set; }
 
-        public Employee Employee { get; set; }
-        public Product Product { get; set; }
+        public Employee? Employee { get; set; }
+        public Product? Product { get; set; }
+        public Unit? Unit { get; set; }
 
     }
 }

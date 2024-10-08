@@ -1,0 +1,65 @@
+﻿@model Production
+@{
+    ViewData["Title"] = "Create Production";
+    var employees = ViewBag.Employees as IEnumerable<Employee>;
+    var units = ViewBag.Units as IEnumerable<Unit>;
+    var products = ViewBag.Products as IEnumerable<Product>;
+
+    var productUnits = products?.ToDictionary(p => p.Id, p => new { p.UnitId, UnitName = units?.FirstOrDefault(u => u.id == p.UnitId)?.UOM });
+}
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Production Entry:</h2>
+    <a asp-controller="Production" asp-action="Index" class="btn btn-primary">Back to List</a>
+</div>
+
+<form asp-controller="Production" asp-action="Create" method="post">
+    <div class="form-group row my-2">
+        <div class="col">
+            <select asp-for="EmployeeId" class="form-control" asp-items="@(new SelectList(employees, "Id", "EmployeeName"))">
+                <option value="">Select Employee</option>
+            </select>
+            <span class="text-danger" asp-validation-for="EmployeeId"></span>
+        </div>
+        <div class="col">
+            <select asp-for="ProductId" class="form-control" asp-items="@(new SelectList(products, "Id", "Name"))" id="productSelect">
+                <option value="">Select Product</option>
+            </select>
+            <span class="text-danger" asp-validation-for="ProductId"></span>
+        </div>
+        <div class="col-auto">
+            <input type="date" asp-for="Date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            <span class="text-danger" asp-validation-for="Date"></span>
+        </div>
+        <div class="col">
+            <input asp-for="Qty" min="1" type="number" class="form-control" placeholder="Quantity" />
+            <span class="text-danger" asp-validation-for="Qty"></span>
+        </div>
+        <div class="col">
+            <input type="text" id="productUnit" class="form-control" readonly />
+        </div>
+    </div>
+
+    <button type="submit">Add</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function ()
+        {
+            const productUnit = @Html.Raw(Json.Serialize(productUnits));
+            $('#productSelect').change(function ()
+            {
+                debugger;
+                const selectedProductId = $(this).val();
+                const unitFiled = $("#productUnit");
+                if (selectedProductId in productUnit)
+                {
+                    unitFiled.val(productUnit[selectedProductId].UnitName);
+                } else
+                {
+                    unitFiled.val("");
+                }
+            });
+        });
+    </script>
+}
