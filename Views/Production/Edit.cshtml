@@ -1,0 +1,86 @@
+﻿@model Production
+@{
+    ViewData["Title"] = "Edit Production";
+    var employees = ViewBag.Employees as IEnumerable<Employee>;
+    var products = ViewBag.Products as IEnumerable<Product>;
+}
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Production</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editProductionForm">
+                    <input type="hidden" id="editProductionId" value="@Model.id" />
+                    <div class="form-group">
+                        <label for="editEmployeeSelect">Employee</label>
+                        <select id="editEmployeeSelect" class="form-control">
+                            @foreach (var employee in employees)
+                            {
+                                <option value="@employee.Id">@employee.EmployeeName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductSelect">Product</label>
+                        <select id="editProductSelect" class="form-control">
+                            @foreach (var product in products)
+                            {
+                                <option value="@product.Id">@product.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editQty">Quantity</label>
+                        <input type="number" id="editQty" class="form-control" value="@Model.Qty" />
+                    </div>
+                    <div class="form-group">
+                        <label for="editDate">Date</label>
+                        <input type="date" id="editDate" class="form-control" value="@Model.Date.ToString("yyyy-MM-dd")" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveEdit">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $("#editModal").modal('show');
+
+            $('#saveEdit').click(function() {
+                const editProduction = {
+                    id: $('#editProductionId').val(),
+                    EmployeeId: $('#editEmployeeSelect').val(),
+                    ProductId: $('#editProductSelect').val(),
+                    Qty: $('#editQty').val(),
+                    Date: $('#editDate').val()
+                };
+                
+                $.ajax({
+                    url: '@Url.Action("Edit", "Production")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(editProduction),
+                    success: function(response) {
+                        $('#editModal').modal('hide');
+                        window.location.href = '/Production/Index';
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Failed to save changes: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+}

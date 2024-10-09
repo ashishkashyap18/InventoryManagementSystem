@@ -1,6 +1,57 @@
-﻿@{
+﻿@model IEnumerable<Production>;
+
+@{
     ViewData["Title"] = "Production List";
 }
 <div>
-    List Production
+    <h1>
+        List Production
+    </h1>
 </div>
+<table id="productionTable">
+    <thead>
+        <tr>
+            <th>Sr no.</th>
+            <th>Employee Name</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int serialNumber = 1;
+        }
+        @foreach (var production in Model)
+        {
+            <tr>
+                <td>@serialNumber</td>
+                <td>@production.Employee.EmployeeName</td>
+                <td>@production.Qty</td>
+                <td>@production.Product.Unit.UOM</td>
+                <td>@production.Date.ToString("dd-MM-yyyy")</td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Edit" asp-controller="Production" asp-route-id="@production.id">Edit</a>
+                    <form onsubmit="return confirm('Are you sure want to delete')" method="post" class="d-inline" asp-controller="Production" asp-action="Delete" asp-route-id="@production.id">
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+
+            serialNumber++;
+        }
+
+    </tbody>
+</table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#productionTable").DataTable({
+                language: {
+                    lengthMenu: "<span style='font-size: 1.2rem; font-weight: semibold; margin-right: 1rem;'>Production Records per page</span> _MENU_",
+                }
+            });
+        });
+    </script>
+}

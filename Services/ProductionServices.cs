@@ -16,14 +16,14 @@ namespace ManagementSystem.Services
         public async Task<Production> CreateProduction(Production production)
         {
             await _context.Productions.AddAsync(production);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();            
             return production;
-        }
+        }       
 
         public async Task<bool> DeleteProduction(int id)
         {
             var production = await GetProductionById(id);
-            if(production != null)
+            if (production != null)
             {
                 _context.Productions.Remove(production);
                 await _context.SaveChangesAsync();
@@ -34,12 +34,19 @@ namespace ManagementSystem.Services
 
         public async Task<IEnumerable<Production>> GetAllProductions()
         {
-            return await _context.Productions.ToListAsync();
+            return await _context.Productions
+                .Include(p=>p.Employee)
+                .Include(p=>p.Product)
+                .ThenInclude(prod => prod.Unit)
+                .ToListAsync();
         }
 
         public async Task<Production> GetProductionById(int id)
         {
-            var production = await _context.Productions.FindAsync(id);
+            var production = await _context.Productions
+                .Include (p=>p.Employee)
+                .Include(p=>p.Product)
+                .FirstOrDefaultAsync(p=> p.id == id);
             if (production == null) { return null; }
             return production;
         }

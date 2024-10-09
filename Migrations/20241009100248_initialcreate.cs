@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -48,7 +47,7 @@ namespace ManagementSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UnitId = table.Column<int>(type: "int", nullable: false),
-                    Rate = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Rate = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,7 +57,7 @@ namespace ManagementSystem.Migrations
                         column: x => x.UnitId,
                         principalTable: "Units",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,8 +68,8 @@ namespace ManagementSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateOnly>(type: "date", nullable: false),
-                    Qty = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Date = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Qty = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

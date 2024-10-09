@@ -12,54 +12,158 @@
     <a asp-controller="Production" asp-action="Index" class="btn btn-primary">Back to List</a>
 </div>
 
-<form asp-controller="Production" asp-action="Create" method="post">
-    <div class="form-group row my-2">
-        <div class="col">
-            <select asp-for="EmployeeId" class="form-control" asp-items="@(new SelectList(employees, "Id", "EmployeeName"))">
-                <option value="">Select Employee</option>
-            </select>
-            <span class="text-danger" asp-validation-for="EmployeeId"></span>
-        </div>
-        <div class="col">
-            <select asp-for="ProductId" class="form-control" asp-items="@(new SelectList(products, "Id", "Name"))" id="productSelect">
-                <option value="">Select Product</option>
-            </select>
-            <span class="text-danger" asp-validation-for="ProductId"></span>
-        </div>
-        <div class="col-auto">
-            <input type="date" asp-for="Date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-            <span class="text-danger" asp-validation-for="Date"></span>
-        </div>
-        <div class="col">
-            <input asp-for="Qty" min="1" type="number" class="form-control" placeholder="Quantity" />
-            <span class="text-danger" asp-validation-for="Qty"></span>
-        </div>
-        <div class="col">
-            <input type="text" id="productUnit" class="form-control" readonly />
+<form>
+    <div id="dataRows">
+        <div class="form-group row py-2">
+            <div class="col">
+                <select id="employeeSelect" asp-for="EmployeeId" class="form-control" asp-items="@(new SelectList(employees, "Id", "EmployeeName"))">
+                    <option value="">Select Employee</option>
+                </select>
+                <span class="text-danger error-message" asp-validation-for="EmployeeId"></span>
+            </div>
+            <div class="col">
+                <select asp-for="ProductId" id="productSelect" class="form-control productSelect" asp-items="@(new SelectList(products, "Id", "Name"))">
+                    <option value="">Select Product</option>
+                </select>
+                <span class="text-danger error-message" asp-validation-for="ProductId"></span>
+            </div>
+            <div class="col">
+                <input type="date" asp-for="Date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" id="dateSelect" />
+                <span class="text-danger error-message" asp-validation-for="Date"></span>
+            </div>
+            <div class="col">
+                <input asp-for="Qty" min="1" type="number" class="form-control qtyInput" placeholder="Quantity" id="qtySelect" />
+                <span class="text-danger error-message" asp-validation-for="Qty"></span>
+            </div>
+            <div class="col">
+                <input type="text" class="productUnit form-control" readonly />
+            </div>
+            <div class="col invisible">
+                <button type="button" class="btn btn-danger remove-row">Remove</button>
+            </div>
         </div>
     </div>
 
-    <button type="submit">Add</button>
+    <button type="submit" class="btn btn-primary">Add</button>
 </form>
+
 
 @section Scripts {
     <script>
-        $(document).ready(function ()
-        {
+        $(document).ready(function () {
             const productUnit = @Html.Raw(Json.Serialize(productUnits));
-            $('#productSelect').change(function ()
-            {
-                debugger;
+            $(document).on('change', '.productSelect', function () {
                 const selectedProductId = $(this).val();
-                const unitFiled = $("#productUnit");
-                if (selectedProductId in productUnit)
-                {
-                    unitFiled.val(productUnit[selectedProductId].UnitName);
-                } else
-                {
+                var unitFiled = $(this).closest('.form-group').find('.productUnit');
+                if (selectedProductId in productUnit) {
+                    unitFiled.val(productUnit[selectedProductId].unitName);
+                } else {
                     unitFiled.val("");
                 }
             });
+
+            $(document).on('keydown', '.qtyInput', function (e) {
+                if (e.key == 'Tab') {
+                    e.preventDefault();
+                    const newRow = `
+                                    <div class="form-group row py-2">
+                                        <div class="col">
+                                            ${$('#employeeSelect').prop('outerHTML')}
+                                            <span class="text-danger error-message" style="display: none;"></span>
+                                        </div>
+                                        <div class="col">
+                                            ${$('#productSelect').prop('outerHTML')}
+                                            <span class="text-danger error-message" style="display: none;"></span>
+                                        </div>
+                                        <div class="col">
+                                            ${$('#dateSelect').prop('outerHTML')}
+                                            <span class="text-danger error-message" style="display: none;"></span>
+                                        </div>
+                                        <div class="col">
+                                            ${$('#qtySelect').prop('outerHTML')}
+                                            <span class="text-danger error-message" style="display: none;"></span>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="productUnit form-control" readonly />
+                                        </div>
+                                        <div class="col">
+                                            <button type="button" class="btn btn-danger remove-row">Remove</button>
+                                        </div>
+                                    </div>
+                                  `;
+                    $('#dataRows').append(newRow);
+                    $('#dataRows .row:last-child #employeeSelect').focus();
+                }
+            });
+
+            $(document).on('click', '.remove-row', function () {
+                if ($('#dataRows .form-group').length > 1) {
+                    $(this).closest('.form-group').remove();
+                } else {
+                    alert("You cannot remove the first row.");
+                }
+            });
+
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+                handleFormSubmit();
+            });
+
+            function handleFormSubmit() {
+                const formData = [];
+                let isValid = true;
+                $('.error-message').hide().text('');
+
+                $('#dataRows .form-group').each(function () {
+                    const employeeId = $(this).find('#employeeSelect').val();
+                    const productId = $(this).find('.productSelect').val();
+                    const date = $(this).find('#dateSelect').val();
+                    const qty = $(this).find('#qtySelect').val();
+
+                    if (!employeeId) {
+                        isValid = false;
+                        $(this).find('.error-message').first().text("Employee is required.").show();
+                    }
+                    if (!productId) {
+                        isValid = false;
+                        $(this).find('.error-message').eq(1).text("Product is required.").show();
+                    }
+                    if (!date) {
+                        isValid = false;
+                        $(this).find('.error-message').eq(2).text("Date is required.").show();
+                    }
+                    if (!qty) {
+                        isValid = false;
+                        $(this).find('.error-message').eq(3).text("Quantity is required.").show();
+                    }
+
+                    if (isValid) {
+                        formData.push({
+                            EmployeeId: employeeId,
+                            ProductId: productId,
+                            Date: date,
+                            Qty: qty,
+                        });
+                    }
+                    if (!isValid) {
+                        return;
+                    }
+                });
+                if (isValid) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("Create", "Production")',
+                        data: JSON.stringify(formData),
+                        contentType: 'application/json;charset=utf-8',
+                        success: function (response) {
+                            window.location.href='@Url.Action("Index","Production")';
+                        },
+                        error: function (xhr, status, error) {
+                            alert("An error occurred: " + error);
+                        }
+                    })
+                }
+            }
         });
     </script>
 }

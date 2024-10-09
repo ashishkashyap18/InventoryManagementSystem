@@ -15,7 +15,7 @@ namespace ManagementSystem.Models
 
         [Required]
         [Range(0.01, double.MaxValue)]
-        public decimal Rate { get; set; }
+        public double Rate { get; set; }
         public Unit? Unit { get; set; }
     }
 }

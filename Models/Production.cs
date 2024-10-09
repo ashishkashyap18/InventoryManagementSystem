@@ -14,14 +14,14 @@ namespace ManagementSystem.Models
         public int ProductId { get; set; }
 
         [Required]
-        public DateOnly Date { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
         [Required]
         public double Qty { get; set; }
 
         public Employee? Employee { get; set; }
-        public Product? Product { get; set; }
-        public Unit? Unit { get; set; }
+        public Product? Product { get; set; }      
 
     }
 }
